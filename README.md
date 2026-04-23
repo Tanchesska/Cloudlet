@@ -9,6 +9,7 @@ This project was generated with a template including simple application launcher
 - `core`: Main module with the application logic shared by all platforms.
 - `lwjgl3`: Primary desktop platform using LWJGL3; was called 'desktop' in older docs.
 - `android`: Android mobile platform. Needs Android SDK.
+- `teavm`: Web backend that supports most JVM languages.
 
 ## Gradle
 
@@ -29,6 +30,8 @@ Useful Gradle tasks and flags:
 - `idea`: generates IntelliJ project data.
 - `lwjgl3:jar`: builds application's runnable jar, which can be found at `lwjgl3/build/libs`.
 - `lwjgl3:run`: starts the application.
+- `teavm:build`: builds the JavaScript application into the build/dist/webapp folder.
+- `teavm:run`: serves the JavaScript application at http://localhost:8080 via a local Jetty server.
 - `test`: runs unit tests (if any).
 
 Note that most tasks that are not specific to a single project can be run with `name:` prefix, where the `name` should be replaced with the ID of a specific project.
