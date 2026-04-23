@@ -1,0 +1,59 @@
+package io.github.cloudlet.constants;
+
+public final class GameConstants {
+
+    private GameConstants() {}
+    public static final float SCREEN_WIDTH  = 800f;
+    public static final float SCREEN_HEIGHT = 480f;
+    public static final float CLOUD_INITIAL_X      = 400f;
+    public static final float CLOUD_INITIAL_Y      = 300f;
+    public static final float CLOUD_INITIAL_RADIUS = 40f;
+    public static final float CLOUD_INITIAL_WATER  = 20f;
+    public static final float CLOUD_MIN_RADIUS     = 20f;
+    public static final float CLOUD_MAX_RADIUS     = 90f;
+    public static final float CLOUD_SPEED          = 300f;
+    public static final float WATER_PER_DROP          = 5f;
+    public static final float WATER_PER_SPECIAL_DROP  = 10f;
+    public static final float WATER_PER_CLOUD_DROP    = 12f;
+    public static final float WATER_DRAIN_PER_SEC     = 4f;
+    public static final float WATER_MAX               = 100f;
+    public static final float RAIN_THRESHOLD          = 30f;
+    public static final float AUTO_POUR_THRESHOLD     = 80f;
+    public static final float AUTO_POUR_RESET_WATER   = 20f;
+    public static final float CLOUD_RADIUS_BASE   = 20f;
+    public static final float CLOUD_RADIUS_FACTOR = 0.7f;
+    public static final float ENEMY_HIT_RADIUS    = 24f;
+    public static final float ENEMY_SPEED         = 120f;
+    public static final float ENEMY_SPAWN_MIN     = 6f;
+    public static final float ENEMY_SPAWN_RANGE   = 6f;
+    public static final float WIND_PUSH_SPEED     = 300f;
+    public static final float WIND_DURATION       = 2f;
+    public static final float WIND_ROTATION_SPEED = 360f;
+    public static final float BONUS_HIT_RADIUS    = 18f;
+    public static final float BONUS_SPEED         = -120f;
+    public static final float BONUS_SPAWN_MIN     = 15f;
+    public static final float BONUS_SPAWN_RANGE   = 10f;
+    public static final float MAGNET_DURATION     = 5f;
+    public static final float MAGNET_PULL_DIST    = 250f;
+    public static final float MAGNET_PULL_SPEED   = 350f;
+    public static final float SHIELD_DURATION     = 5f;
+    public static final float RAINBOW_WATER_MULT  = 1.5f;
+    public static final float RAINBOW_DURATION    = 3f;
+    public static final float DROP_SPEED          = 200f;
+    public static final float DROP_SPAWN_INTERVAL = 0.5f;
+    public static final float SPECIAL_DROP_CHANCE = 0.08f;
+    public static final float CLOUD_DROP_CHANCE   = 0.03f;
+    public static final float RAIN_FLOOR_Y        = 130f;
+    public static final float FLOWER_SPEED        = 60f;
+    public static final float FLOWER_MIN_DIST     = 350f;
+    public static final float FLOWER_EXTRA_DIST   = 250f;
+    public static final float FLOWER_Y            = 100f;
+    public static final int   FLOWER_COUNT        = 5;
+    public static final float DIFFICULTY_SCALE_TIME = 90f;
+    public static final float FIELD_MIN_Y         = 120f;
+    public static final float FIELD_MAX_Y         = 480f;
+    public static final float POUR_BTN_X          = 680f;
+    public static final float POUR_BTN_Y          = 20f;
+    public static final float POUR_BTN_W          = 110f;
+    public static final float POUR_BTN_H          = 46f;
+}
