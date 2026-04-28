@@ -18,10 +18,15 @@ public class DropService {
     }
 
     public void update(float delta, Cloud cloud, CloudService cloudService) {
+        update(delta, cloud, cloudService, 1f);
+    }
+
+    public void update(float delta, Cloud cloud, CloudService cloudService, float speedMultiplier) {
 
         spawnTimer += delta;
 
-        if (spawnTimer > 0.5f) {
+        float spawnInterval = Math.max(0.15f, 0.5f / speedMultiplier);
+        if (spawnTimer > spawnInterval) {
             spawnTimer = 0;
 
             float x = 820;
@@ -35,7 +40,7 @@ public class DropService {
         while (iterator.hasNext()) {
             Drop drop = iterator.next();
 
-            drop.position.x -= 200 * delta;
+            drop.position.x -= 200 * speedMultiplier * delta;
 
             float dx = drop.position.x - cloud.position.x;
             float dy = drop.position.y - cloud.position.y;
