@@ -12,10 +12,13 @@ import io.github.cloudlet.domain.RainDrop;
 public class FlowerService {
 
     private List<Flower> flowers = new ArrayList<>();
-
     private static final float SPEED = 60f;
 
-    public FlowerService() {
+    private ScoreService scoreService;
+
+    public FlowerService(ScoreService scoreService) {
+        this.scoreService = scoreService;
+
         for (int i = 0; i < 5; i++) {
             float x = 800 + i * 200;
             int type = MathUtils.random(0, 2);
@@ -50,24 +53,28 @@ public class FlowerService {
                 if (flower.hitCooldown <= 0f &&
                     flower.hitbox.contains(drop.x, drop.y)) {
 
-                    flower.hitCooldown = 0.3f;
+                    flower.hitCooldown = 0.25f;
 
                     it.remove();
 
+                    flower.waterings += 1;
 
-                    flower.waterings++;
+                    scoreService.addFlowerScore(
+                        flower.waterings,
+                        flower.position.x,
+                        flower.position.y + 50
+                    );
 
-                    if (flower.waterings == 1) flower.stage = 1;
-                    else if (flower.waterings == 2) flower.stage = 2;
-                    else if (flower.waterings == 3) flower.stage = 3;
-
-                    else if (flower.waterings == 4) {
-                        flower.waterings = 0;
-                        flower.stage = 0;
-                        flower.reset(820);
+                    switch (flower.waterings) {
+                        case 1: flower.stage = 1; break;
+                        case 2: flower.stage = 2; break;
+                        case 3: flower.stage = 3; break;
+                        case 4:
+                            flower.stage = 0;
+                            flower.waterings = 0;
+                            flower.reset(820);
+                            break;
                     }
-
-                    break;
                 }
             }
         }
