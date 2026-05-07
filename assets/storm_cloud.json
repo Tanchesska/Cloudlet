@@ -1,0 +1,26 @@
+{ "frames": [
+   {
+    "filename": "storm_cloud.png",
+    "frame": { "x": 0, "y": 0, "w": 170, "h": 280 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 170, "h": 280 },
+    "sourceSize": { "w": 170, "h": 280 },
+    "duration": 100
+   }
+ ],
+ "meta": {
+  "app": "https://www.aseprite.org/",
+  "version": "1.3.16.1-trial",
+  "format": "RGBA8888",
+  "size": { "w": 170, "h": 280 },
+  "scale": "1",
+  "frameTags": [
+  ],
+  "layers": [
+   { "name": "Layer", "opacity": 255, "blendMode": "normal" }
+  ],
+  "slices": [
+  ]
+ }
+}
