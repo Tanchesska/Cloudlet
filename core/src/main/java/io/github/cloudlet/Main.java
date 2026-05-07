@@ -42,6 +42,21 @@ public class Main extends ApplicationAdapter {
     private Texture dropTexture;
     private TextureRegion dropRegion;
     private TextureRegion rainDropRegion;
+    private EnemyService enemyService;
+    private Texture enemyTexture;
+    private Texture sunTexture;
+    private Texture windTexture;
+    private Texture birdTexture;
+    private Texture stormTexture;
+    private TextureRegion sunRegion;
+    private TextureRegion windRegion;
+    private TextureRegion birdRegion;
+    private TextureRegion stormRegion;
+    private BonusService bonusService;
+
+    private Texture magnetTexture;
+    private Texture shieldTexture;
+    private Texture rainbowTexture;
     private float inputBlockTimer = 0f;
     private boolean autoPourTriggered = false;
 
@@ -64,6 +79,7 @@ public class Main extends ApplicationAdapter {
         rainService = new RainService();
         scoreService = new ScoreService();
         flowerService = new FlowerService(scoreService);
+        enemyService = new EnemyService();
 
         cloudTexture = new Texture("blue_cloud.png");
         cloudTexture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
@@ -92,6 +108,18 @@ public class Main extends ApplicationAdapter {
         flowerRegions[2][1] = new TextureRegion(flowersTexture, 0, 224, 32, 32);
         flowerRegions[2][2] = new TextureRegion(flowersTexture, 224, 96, 32, 32);
         flowerRegions[2][3] = new TextureRegion(flowersTexture, 128, 96, 32, 32);
+
+
+        sunTexture = new Texture("sun.png");
+        windTexture = new Texture("wind.png");
+        birdTexture = new Texture("eagles.png");
+        stormTexture = new Texture("storm.png");
+
+        bonusService = new BonusService();
+
+        magnetTexture = new Texture("magnet.png");
+        shieldTexture = new Texture("shield.png");
+        rainbowTexture = new Texture("rainbow.png");
     }
 
     @Override
@@ -103,11 +131,22 @@ public class Main extends ApplicationAdapter {
 
         float speedMultiplier = 1f + gameTime / 90f;
         scoreService.update(delta, speedMultiplier);
+        enemyService.update(
+            delta,
+            cloud,
+            bonusService
+        );
+        bonusService.update(
+            delta,
+            cloud,
+            dropService
+        );
 
 
-        if (inputBlockTimer <= 0f) {
+        if (inputBlockTimer <= 0f && !cloud.blocked) {
             inputService.update(cloud, camera, delta);
         }
+
         cloudService.update(cloud, delta);
         dropService.update(delta, cloud, cloudService, speedMultiplier);
         rainService.update(delta);
@@ -174,6 +213,78 @@ public class Main extends ApplicationAdapter {
         font.setColor(Color.YELLOW);
         font.draw(batch, "Score: " + scoreService.getScore(), 10, 470);
         font.draw(batch, "Best: " + scoreService.getBestScore(), 10, 440);
+        for (Enemy e : enemyService.getEnemies()) {
+
+            Texture tex;
+
+            switch (e.type) {
+
+                case SUN:
+                    tex = sunTexture;
+                    break;
+
+                    case WIND:
+                   tex = windTexture;
+                    break;
+
+                case BIRD:
+                    tex = birdTexture;
+                    break;
+
+                case STORM:
+                    tex = stormTexture;
+                    break;
+
+                default:
+                    continue;
+            }
+
+            batch.setColor(1f, 1f, 1f, e.alpha);
+
+            batch.draw(
+                tex,
+                e.position.x,
+                e.position.y,
+                48,
+                48
+            );
+
+            batch.setColor(Color.WHITE);
+        }
+
+        for (Bonus b : bonusService.getBonuses()) {
+
+            Texture tex;
+
+            switch (b.type) {
+
+                case MAGNET:
+                    tex = magnetTexture;
+                    break;
+
+                case SHIELD:
+                    tex = shieldTexture;
+                    break;
+
+                case RAINBOW:
+                    tex = rainbowTexture;
+                    break;
+
+                default:
+                    continue;
+            }
+
+            batch.setColor(1f, 1f, 1f, b.alpha);
+
+            batch.draw(
+                tex,
+                b.position.x,
+                b.position.y,
+                36,
+                36
+            );
+        }
+
         for (ScoreService.FloatingText t : scoreService.getTexts()) {
 
             font.setColor(1f, 1f, 0f, 1f);
@@ -217,6 +328,17 @@ public class Main extends ApplicationAdapter {
             );
         }
         font.setColor(Color.WHITE);
+        if (cloud.blocked) {
+
+            font.setColor(Color.RED);
+
+            font.draw(
+                batch,
+                "STORM BLOCK!",
+                cloud.position.x - 40,
+                cloud.position.y + 60
+            );
+        }
         if (canRain) {
             font.draw(batch, "Pour!", 700, 50);
         }
@@ -225,7 +347,20 @@ public class Main extends ApplicationAdapter {
     }
 
 private void drawCloud(Cloud cloud) {
+    if (bonusService.isShieldActive()) {
 
+        batch.setColor(0.5f, 0.8f, 1f, 0.35f);
+
+        batch.draw(
+            cloudTexture,
+            cloud.position.x - cloud.radius - 20,
+            cloud.position.y - cloud.radius - 20,
+            cloud.radius * 2 + 40,
+            cloud.radius * 2 + 40
+        );
+
+        batch.setColor(Color.WHITE);
+    }
     float size = cloud.radius * 2f;
 
     batch.draw(
