@@ -1,131 +1,109 @@
 package io.github.cloudlet.service;
-
 import com.badlogic.gdx.math.Vector2;
-
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Random;
-
 import io.github.cloudlet.constants.GameConstants;
-import io.github.cloudlet.domain.Bonus;
 import io.github.cloudlet.domain.Cloud;
+import io.github.cloudlet.domain.CloudEffects;
 import io.github.cloudlet.domain.Drop;
+import io.github.cloudlet.domain.bonus.Bonus;
+import io.github.cloudlet.domain.bonus.MagnetBonus;
+import io.github.cloudlet.domain.bonus.RainbowBonus;
+import io.github.cloudlet.domain.bonus.ShieldBonus;
+import io.github.cloudlet.world.GameWorld;
 
 public class BonusService {
-    private final List<Bonus> bonuses = new ArrayList<>();
-    private final Random random = new Random();
-    private float spawnTimer = 0f;
-    private float nextSpawn  = GameConstants.BONUS_SPAWN_MIN;
-    private boolean magnetActive  = false;
-    private float   magnetTimer   = 0f;
-    private boolean shieldActive  = false;
-    private float   shieldTimer   = 0f;
-    private boolean rainbowActive = false;
-    private float   rainbowTimer  = 0f;
+    private final Random random     = new Random();
+    private float        spawnTimer = 0f;
+    private float        nextSpawn  = GameConstants.BONUS_SPAWN_MIN;
 
-    public void update(float delta, Cloud cloud, DropService dropService, CloudService cloudService) {
+    public void update(float delta, GameWorld world) {
+        Cloud        cloud   = world.getCloud();
+        CloudEffects effects = world.getEffects();
+
         spawnTimer += delta;
         if (spawnTimer >= nextSpawn) {
-            spawnBonus();
+            world.getBonuses().add(spawnBonus());
             spawnTimer = 0f;
-            nextSpawn = GameConstants.BONUS_SPAWN_MIN
+            nextSpawn  = GameConstants.BONUS_SPAWN_MIN
                 + random.nextFloat() * GameConstants.BONUS_SPAWN_RANGE;
         }
 
-        Iterator<Bonus> iterator = bonuses.iterator();
-        while (iterator.hasNext()) {
-            Bonus b = iterator.next();
+        Iterator<Bonus> it = world.getBonuses().iterator();
+        while (it.hasNext()) {
+            Bonus b = it.next();
             b.update(delta);
 
-            if (!b.active || b.position.x < -100) {
-                iterator.remove();
+            if (!b.isActive() || b.getPosition().x < -GameConstants.BONUS_OFFSCREEN_X) {
+                it.remove();
                 continue;
             }
-            float touchDist = cloud.radius + GameConstants.BONUS_HIT_RADIUS;
-            if (!b.disappearing && b.position.dst(cloud.position) < touchDist) {
-                activateBonus(b, cloud, cloudService);
-                b.disappearing = true;
+            float touchDist = cloud.getRadius() + GameConstants.BONUS_HIT_RADIUS;
+            if (!b.isDisappearing()
+                && b.getPosition().dst(cloud.getPosition()) < touchDist) {
+                b.onCollect(world);
+                b.setDisappearing(true);
             }
         }
-        if (magnetActive) {
-            magnetTimer -= delta;
-            if (magnetTimer <= 0f) {
-                magnetActive   = false;
-                cloud.magnetTimer = 0f;
+
+        tickMagnet(delta, world);
+        tickShield(delta, effects);
+        tickRainbow(delta, effects);
+    }
+
+    private void tickMagnet(float delta, GameWorld world) {
+        CloudEffects effects = world.getEffects();
+        if (effects.getMagnetTimer() > 0f) {
+            effects.setMagnetTimer(effects.getMagnetTimer() - delta);
+            if (effects.getMagnetTimer() <= 0f) {
+                effects.setMagnetTimer(0f);
             } else {
-                cloud.magnetTimer = magnetTimer;
-                pullDrops(cloud, dropService, delta);
-            }
-        }
-        if (shieldActive) {
-            shieldTimer -= delta;
-            if (shieldTimer <= 0f) {
-                shieldActive   = false;
-                cloud.hasShield = false;
-            }
-        }
-        if (rainbowActive) {
-            rainbowTimer -= delta;
-            if (rainbowTimer <= 0f) {
-                rainbowActive      = false;
-                cloud.rainbowTimer = 0f;
-            } else {
-                cloud.rainbowTimer = rainbowTimer;
+                pullDrops(world, delta);
             }
         }
     }
-    private void activateBonus(Bonus b, Cloud cloud, CloudService cloudService) {
-        switch (b.type) {
-
-            case MAGNET:
-                magnetActive      = true;
-                magnetTimer       = GameConstants.MAGNET_DURATION;
-                cloud.magnetTimer = magnetTimer;
-                break;
-
-            case SHIELD:
-                shieldActive   = true;
-                shieldTimer    = GameConstants.SHIELD_DURATION;
-                cloud.hasShield = true;
-                break;
-
-            case RAINBOW:
-                cloud.water = Math.min(
-                    cloud.water * GameConstants.RAINBOW_WATER_MULT,
-                    GameConstants.WATER_MAX
-                );
-                cloudService.updateSize(cloud);
-                rainbowActive      = true;
-                rainbowTimer       = GameConstants.RAINBOW_DURATION;
-                cloud.rainbowTimer = rainbowTimer;
-                break;
+    private void tickShield(float delta, CloudEffects effects) {
+        if (effects.hasShield()) {
+            effects.setShieldTimer(effects.getShieldTimer() - delta);
+            if (effects.getShieldTimer() <= 0f) {
+                effects.setShield(false);
+                effects.setShieldTimer(0f);
+            }
         }
     }
-    private void pullDrops(Cloud cloud, DropService dropService, float delta) {
-        for (Drop drop : dropService.getDrops()) {
+
+    private void tickRainbow(float delta, CloudEffects effects) {
+        if (effects.getRainbowTimer() > 0f) {
+            effects.setRainbowTimer(effects.getRainbowTimer() - delta);
+            if (effects.getRainbowTimer() <= 0f) {
+                effects.setRainbowTimer(0f);
+            }
+        }
+    }
+
+    private void pullDrops(GameWorld world, float delta) {
+        Cloud cloud = world.getCloud();
+        for (Drop drop : world.getDrops()) {
             Vector2 dir = new Vector2(
-                cloud.position.x - drop.position.x,
-                cloud.position.y - drop.position.y
+                cloud.getPosition().x - drop.getPosition().x,
+                cloud.getPosition().y - drop.getPosition().y
             );
             float dist = dir.len();
-            if (dist < GameConstants.MAGNET_PULL_DIST && dist > 0) {
+            if (dist < GameConstants.MAGNET_PULL_DIST && dist > 0f) {
                 dir.nor();
-                drop.position.mulAdd(dir, GameConstants.MAGNET_PULL_SPEED * delta);
+                drop.getPosition().mulAdd(dir, GameConstants.MAGNET_PULL_SPEED * delta);
             }
         }
     }
 
-    private void spawnBonus() {
-        Bonus.Type type = Bonus.Type.values()[
-            random.nextInt(Bonus.Type.values().length)
-            ];
-        float x = 900 + random.nextInt(300);
-        float y = 140 + random.nextInt(260);
-        bonuses.add(new Bonus(type, x, y));
+    private Bonus spawnBonus() {
+        float x   = 900 + random.nextInt(300);
+        float y   = 140 + random.nextInt(260);
+        int   idx = random.nextInt(3);
+        switch (idx) {
+            case 0:  return new MagnetBonus(x, y);
+            case 1:  return new ShieldBonus(x, y);
+            default: return new RainbowBonus(x, y);
+        }
     }
-    public List<Bonus>  getBonuses()      { return bonuses; }
-    public boolean      isShieldActive()  { return shieldActive; }
-    public boolean      isMagnetActive()  { return magnetActive; }
-    public boolean      isRainbowActive() { return rainbowActive; }
 }

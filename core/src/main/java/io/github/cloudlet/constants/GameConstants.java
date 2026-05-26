@@ -33,7 +33,7 @@ public final class GameConstants {
     public static final float BONUS_SPEED         = -120f;
     public static final float BONUS_SPAWN_MIN     = 15f;
     public static final float BONUS_SPAWN_RANGE   = 10f;
-    public static final float MAGNET_DURATION     = 5f;
+    public static final float MAGNET_DURATION     = 3f;
     public static final float MAGNET_PULL_DIST    = 250f;
     public static final float MAGNET_PULL_SPEED   = 350f;
     public static final float SHIELD_DURATION     = 5f;
@@ -56,4 +56,24 @@ public final class GameConstants {
     public static final float POUR_BTN_Y          = 20f;
     public static final float POUR_BTN_W          = 110f;
     public static final float POUR_BTN_H          = 46f;
+    public static final float ENEMY_OFFSCREEN_X       = 120f;
+    public static final float BONUS_OFFSCREEN_X       = 100f;
+    public static final float SUN_WATER_DRAIN_PER_SEC = 12f;
+    public static final float SUN_EFFECT_DURATION     = 3f;
+    public static final float BIRD_WATER_STEAL        = 25f;
+    public static final float STORM_BLOCK_DURATION    = 1.5f;
+    public static final float ENEMY_DYING_FADE_SPEED  = 1.5f;
+    public static final float BONUS_FADE_SPEED        = 2f;
+    public static final int   RAIN_DROP_COUNT         = 20;
+    public static final float RAIN_VEL_X_RANGE        = 30f;
+    public static final float RAIN_VEL_Y_BASE         = 350f;
+    public static final float RAIN_VEL_Y_RANGE        = 150f;
+    public static final int   FLOWER_SCORE_1          = 20;
+    public static final int   FLOWER_SCORE_2          = 50;
+    public static final int   FLOWER_SCORE_3          = 70;
+    public static final int   FLOWER_SCORE_4          = 100;
+    public static final int   FLOWER_MAX_WATERINGS    = 4;
+    public static final float FLOWER_HIT_COOLDOWN     = 0.25f;
+    public static final float CLOUD_DEAD_RADIUS_THRESHOLD = 0.5f;
+    public static final float INPUT_BLOCK_ON_POUR     = 0.5f;
 }

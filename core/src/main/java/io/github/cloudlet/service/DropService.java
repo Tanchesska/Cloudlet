@@ -1,49 +1,49 @@
 package io.github.cloudlet.service;
-
 import com.badlogic.gdx.math.MathUtils;
-
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
-
 import io.github.cloudlet.constants.GameConstants;
 import io.github.cloudlet.domain.Cloud;
 import io.github.cloudlet.domain.Drop;
-
+import io.github.cloudlet.world.GameWorld;
 public class DropService {
-    private final ArrayList<Drop> drops  = new ArrayList<>();
-    private final Random          random = new Random();
-    private float spawnTimer = 0f;
-    public ArrayList<Drop> getDrops() {
-        return drops;
+    private final CloudService cloudService;
+    private final Random       random     = new Random();
+    private float              spawnTimer = 0f;
+    public DropService(CloudService cloudService) {
+        this.cloudService = cloudService;
     }
-    public void update(float delta, Cloud cloud, CloudService cloudService, float speedMultiplier) {
+    public void update(float delta, GameWorld world) {
+        Cloud cloud           = world.getCloud();
+        float speedMultiplier = world.getSpeedMultiplier();
+
         spawnTimer += delta;
         float spawnInterval = Math.max(0.15f,
             GameConstants.DROP_SPAWN_INTERVAL / speedMultiplier);
         if (spawnTimer > spawnInterval) {
-            spawnTimer = 0;
-            spawnDrop();
+            spawnTimer = 0f;
+            world.getDrops().add(spawnDrop());
         }
-        Iterator<Drop> iterator = drops.iterator();
-        while (iterator.hasNext()) {
-            Drop drop = iterator.next();
-            drop.position.x -= GameConstants.DROP_SPEED * speedMultiplier * delta;
-            float dx   = drop.position.x - cloud.position.x;
-            float dy   = drop.position.y - cloud.position.y;
+        Iterator<Drop> it = world.getDrops().iterator();
+        while (it.hasNext()) {
+            Drop drop = it.next();
+            drop.getPosition().x -= GameConstants.DROP_SPEED * speedMultiplier * delta;
+
+            float dx   = drop.getPosition().x - cloud.getPosition().x;
+            float dy   = drop.getPosition().y - cloud.getPosition().y;
             float dist = (float) Math.sqrt(dx * dx + dy * dy);
-            if (dist < cloud.radius + drop.radius) {
-                float water = waterForType(drop.type);
-                cloudService.addWater(cloud, water);
-                iterator.remove();
+
+            if (dist < cloud.getRadius() + drop.getRadius()) {
+                cloudService.addWater(cloud, waterForType(drop.getType()));
+                it.remove();
                 continue;
             }
-            if (drop.position.x < 0) {
-                iterator.remove();
+            if (drop.getPosition().x < 0f) {
+                it.remove();
             }
         }
     }
-    private void spawnDrop() {
+    private Drop spawnDrop() {
         float roll = random.nextFloat();
         Drop.DropType type;
         if (roll < GameConstants.CLOUD_DROP_CHANCE) {
@@ -53,14 +53,14 @@ public class DropService {
         } else {
             type = Drop.DropType.NORMAL;
         }
-        float y = MathUtils.random(200, 480);
-        drops.add(new Drop(820, y, type));
+        float y = MathUtils.random(200f, 480f);
+        return new Drop(820f, y, type);
     }
     private float waterForType(Drop.DropType type) {
         switch (type) {
-            case SPECIAL:   return GameConstants.WATER_PER_SPECIAL_DROP;
+            case SPECIAL:    return GameConstants.WATER_PER_SPECIAL_DROP;
             case MINI_CLOUD: return GameConstants.WATER_PER_CLOUD_DROP;
-            default:        return GameConstants.WATER_PER_DROP;
+            default:         return GameConstants.WATER_PER_DROP;
         }
     }
 }
