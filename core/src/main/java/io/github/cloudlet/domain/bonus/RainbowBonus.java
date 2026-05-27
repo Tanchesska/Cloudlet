@@ -6,8 +6,8 @@ public class RainbowBonus extends Bonus {
     public RainbowBonus(float x, float y) { super(x, y); }
     @Override
     public void onCollect(GameWorld world) {
-        float extra = world.getCloud().getWater() * (GameConstants.RAINBOW_WATER_MULT - 1f);
+        float extra = world.getCloud().getWater() * (GameConstants.Bonus.RAINBOW_WATER_MULT - 1f);
         world.getCloud().addWater(extra);
-        world.getEffects().setRainbowTimer(GameConstants.RAINBOW_DURATION);
+        world.getEffects().setRainbowTimer(GameConstants.Bonus.RAINBOW_DURATION);
     }
 }

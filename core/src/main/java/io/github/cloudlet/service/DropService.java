@@ -3,7 +3,7 @@ import com.badlogic.gdx.math.MathUtils;
 import java.util.Iterator;
 import java.util.Random;
 import io.github.cloudlet.constants.GameConstants;
-import io.github.cloudlet.domain.Cloud;
+import io.github.cloudlet.domain.cloud.Cloud;
 import io.github.cloudlet.domain.Drop;
 import io.github.cloudlet.world.GameWorld;
 public class DropService {
@@ -19,7 +19,7 @@ public class DropService {
 
         spawnTimer += delta;
         float spawnInterval = Math.max(0.15f,
-            GameConstants.DROP_SPAWN_INTERVAL / speedMultiplier);
+            GameConstants.Drop.SPAWN_INTERVAL / speedMultiplier);
         if (spawnTimer > spawnInterval) {
             spawnTimer = 0f;
             world.getDrops().add(spawnDrop());
@@ -27,7 +27,7 @@ public class DropService {
         Iterator<Drop> it = world.getDrops().iterator();
         while (it.hasNext()) {
             Drop drop = it.next();
-            drop.getPosition().x -= GameConstants.DROP_SPEED * speedMultiplier * delta;
+            drop.getPosition().x -= GameConstants.Drop.SPEED * speedMultiplier * delta;
 
             float dx   = drop.getPosition().x - cloud.getPosition().x;
             float dy   = drop.getPosition().y - cloud.getPosition().y;
@@ -46,9 +46,9 @@ public class DropService {
     private Drop spawnDrop() {
         float roll = random.nextFloat();
         Drop.DropType type;
-        if (roll < GameConstants.CLOUD_DROP_CHANCE) {
+        if (roll < GameConstants.Drop.CLOUD_CHANCE) {
             type = Drop.DropType.MINI_CLOUD;
-        } else if (roll < GameConstants.CLOUD_DROP_CHANCE + GameConstants.SPECIAL_DROP_CHANCE) {
+        } else if (roll < GameConstants.Drop.CLOUD_CHANCE + GameConstants.Drop.SPECIAL_CHANCE) {
             type = Drop.DropType.SPECIAL;
         } else {
             type = Drop.DropType.NORMAL;
@@ -58,9 +58,9 @@ public class DropService {
     }
     private float waterForType(Drop.DropType type) {
         switch (type) {
-            case SPECIAL:    return GameConstants.WATER_PER_SPECIAL_DROP;
-            case MINI_CLOUD: return GameConstants.WATER_PER_CLOUD_DROP;
-            default:         return GameConstants.WATER_PER_DROP;
+            case SPECIAL:    return GameConstants.Drop.WATER_SPECIAL;
+            case MINI_CLOUD: return GameConstants.Drop.WATER_CLOUD;
+            default:         return GameConstants.Drop.WATER_NORMAL;
         }
     }
 }

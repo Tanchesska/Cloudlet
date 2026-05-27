@@ -1,4 +1,4 @@
-package io.github.cloudlet.domain;
+package io.github.cloudlet.domain.cloud;
 public class CloudEffects {
 
     private boolean hasShield    = false;

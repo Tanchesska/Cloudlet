@@ -29,16 +29,16 @@ public class ScoreService {
     }
     public void addFlowerScore(int waterings, float x, float y) {
         int points = scoreForWaterings(waterings);
-        score += points;
+        score = Math.min(score + points, GameConstants.Screen.MAX_SCORE);
         updateBest();
         texts.add(new FloatingText(x, y, "+" + points));
     }
     private int scoreForWaterings(int waterings) {
         switch (waterings) {
-            case 1: return GameConstants.FLOWER_SCORE_1;
-            case 2: return GameConstants.FLOWER_SCORE_2;
-            case 3: return GameConstants.FLOWER_SCORE_3;
-            case 4: return GameConstants.FLOWER_SCORE_4;
+            case 1: return GameConstants.Flower.SCORE_1;
+            case 2: return GameConstants.Flower.SCORE_2;
+            case 3: return GameConstants.Flower.SCORE_3;
+            case 4: return GameConstants.Flower.SCORE_4;
             default: return 0;
         }
     }

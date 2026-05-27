@@ -24,7 +24,7 @@ public class GameOverScreen implements Screen {
         this.score = score;
         this.bestScore = bestScore;
         this.camera = new OrthographicCamera();
-        this.camera.setToOrtho(false, GameConstants.SCREEN_WIDTH, GameConstants.SCREEN_HEIGHT);
+        this.camera.setToOrtho(false, GameConstants.Screen.WIDTH, GameConstants.Screen.HEIGHT);
         this.restartButtonRect = new Rectangle(300, 165, 200, 55);
     }
     @Override
@@ -35,8 +35,8 @@ public class GameOverScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         camera.update();
 
-        float W = GameConstants.SCREEN_WIDTH;
-        float H = GameConstants.SCREEN_HEIGHT;
+        float W = GameConstants.Screen.WIDTH;
+        float H = GameConstants.Screen.HEIGHT;
 
         game.assets.batch.setProjectionMatrix(camera.combined);
         game.assets.batch.begin();

@@ -20,8 +20,8 @@ public class Flower implements GameEntity {
         this.hitbox   = new Rectangle(x - 20, y, 40, 40);
     }
     public void reposition(float x) {
-        position.set(x, GameConstants.FLOWER_Y);
-        hitbox.setPosition(x - 20, GameConstants.FLOWER_Y);
+        position.set(x, GameConstants.Flower.POS_Y);
+        hitbox.setPosition(x - 20, GameConstants.Flower.POS_Y);
         hitCooldown = 0f;
     }
     public int     getType()       { return type; }

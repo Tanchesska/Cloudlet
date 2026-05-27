@@ -9,15 +9,15 @@ public class StormEnemy extends Enemy {
         if (!active) return;
 
         if (dying) {
-            alpha -= delta * GameConstants.ENEMY_DYING_FADE_SPEED;
+            alpha -= delta * GameConstants.Enemy.DYING_FADE_SPEED;
             if (alpha <= 0f) active = false;
             return;
         }
-        float touchDist = world.getCloud().getRadius() + GameConstants.ENEMY_HIT_RADIUS;
+        float touchDist = world.getCloud().getRadius() + GameConstants.Enemy.HIT_RADIUS;
         if (!triggered && position.dst(world.getCloud().getPosition()) < touchDist) {
             if (!world.getEffects().hasShield()) {
                 triggered  = true;
-                blockTimer = GameConstants.STORM_BLOCK_DURATION;
+                blockTimer = GameConstants.Enemy.STORM_BLOCK_DURATION;
             }
         }
         if (triggered) {

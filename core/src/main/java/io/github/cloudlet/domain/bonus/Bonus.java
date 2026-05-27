@@ -16,14 +16,14 @@ public abstract class Bonus implements GameEntity, Updatable {
 
     public Bonus(float x, float y) {
         this.position = new Vector2(x, y);
-        this.velocity = new Vector2(GameConstants.BONUS_SPEED, 0f);
+        this.velocity = new Vector2(GameConstants.Bonus.SPEED, 0f);
     }
 
     @Override
     public void update(float delta) {
         position.mulAdd(velocity, delta);
         if (disappearing) {
-            alpha -= delta * GameConstants.BONUS_FADE_SPEED;
+            alpha -= delta * GameConstants.Bonus.FADE_SPEED;
             if (alpha <= 0f) active = false;
         }
     }

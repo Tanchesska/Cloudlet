@@ -12,22 +12,22 @@ import io.github.cloudlet.world.GameWorld;
 public class EnemyService {
     private final Random random     = new Random();
     private float        spawnTimer = 0f;
-    private float        nextSpawn  = GameConstants.ENEMY_SPAWN_MIN;
+    private float        nextSpawn  = GameConstants.Enemy.SPAWN_MIN;
     public void update(float delta, GameWorld world) {
         List<Enemy> enemies = world.getEnemies();
         enemies.removeIf(e -> !e.isActive()
-            || e.getPosition().x < -GameConstants.ENEMY_OFFSCREEN_X);
+            || e.getPosition().x < -GameConstants.Enemy.OFFSCREEN_X);
 
         for (Enemy e : enemies) {
-            e.getPosition().x -= GameConstants.ENEMY_SPEED * delta;
+            e.getPosition().x -= GameConstants.Enemy.SPEED * delta;
             e.update(delta, world);
         }
         spawnTimer += delta;
         if (spawnTimer >= nextSpawn) {
             enemies.add(spawnEnemy());
             spawnTimer = 0f;
-            nextSpawn  = GameConstants.ENEMY_SPAWN_MIN
-                + random.nextFloat() * GameConstants.ENEMY_SPAWN_RANGE;
+            nextSpawn  = GameConstants.Enemy.SPAWN_MIN
+                + random.nextFloat() * GameConstants.Enemy.SPAWN_RANGE;
         }
     }
     private Enemy spawnEnemy() {

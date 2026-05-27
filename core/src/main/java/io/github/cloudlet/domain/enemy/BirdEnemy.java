@@ -8,15 +8,15 @@ public class BirdEnemy extends Enemy {
     public void update(float delta, GameWorld world) {
         if (!active) return;
         if (dying) {
-            alpha -= delta * GameConstants.ENEMY_DYING_FADE_SPEED;
+            alpha -= delta * GameConstants.Enemy.DYING_FADE_SPEED;
             if (alpha <= 0f) active = false;
             return;
         }
-        float touchDist = world.getCloud().getRadius() + GameConstants.ENEMY_HIT_RADIUS;
+        float touchDist = world.getCloud().getRadius() + GameConstants.Enemy.HIT_RADIUS;
         if (!triggered && position.dst(world.getCloud().getPosition()) < touchDist) {
             if (!world.getEffects().hasShield()) {
                 triggered = true;
-                world.getCloud().consumeWater(GameConstants.BIRD_WATER_STEAL);
+                world.getCloud().consumeWater(GameConstants.Enemy.BIRD_WATER_STEAL);
                 startDying();
             }
         }

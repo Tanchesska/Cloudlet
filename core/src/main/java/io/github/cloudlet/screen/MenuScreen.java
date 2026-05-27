@@ -22,7 +22,7 @@ public class MenuScreen implements Screen {
     public MenuScreen(Main game) {
         this.game = game;
         this.camera = new OrthographicCamera();
-        this.camera.setToOrtho(false, GameConstants.SCREEN_WIDTH, GameConstants.SCREEN_HEIGHT);
+        this.camera.setToOrtho(false, GameConstants.Screen.WIDTH, GameConstants.Screen.HEIGHT);
         this.startButtonRect = new Rectangle(300, 185, 200, 55);
     }
 
@@ -34,8 +34,8 @@ public class MenuScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         camera.update();
 
-        float W = GameConstants.SCREEN_WIDTH;
-        float H = GameConstants.SCREEN_HEIGHT;
+        float W = GameConstants.Screen.WIDTH;
+        float H = GameConstants.Screen.HEIGHT;
 
         game.assets.batch.setProjectionMatrix(camera.combined);
         game.assets.batch.begin();

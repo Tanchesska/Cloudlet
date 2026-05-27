@@ -14,6 +14,8 @@ import io.github.cloudlet.Main;
 import io.github.cloudlet.constants.GameConstants;
 import io.github.cloudlet.domain.*;
 import io.github.cloudlet.domain.bonus.Bonus;
+import io.github.cloudlet.domain.cloud.Cloud;
+import io.github.cloudlet.domain.cloud.CloudEffects;
 import io.github.cloudlet.domain.enemy.Enemy;
 import io.github.cloudlet.service.*;
 import io.github.cloudlet.world.GameWorld;
@@ -34,15 +36,15 @@ public class GameScreen implements Screen {
     private float inputBlockTimer = 0f;
     private boolean autoPourTriggered = false;
     private final Rectangle pourButtonRect = new Rectangle(
-        GameConstants.POUR_BTN_X, GameConstants.POUR_BTN_Y,
-        GameConstants.POUR_BTN_W, GameConstants.POUR_BTN_H);
+        GameConstants.Screen.POUR_BTN_X, GameConstants.Screen.POUR_BTN_Y,
+        GameConstants.Screen.POUR_BTN_W, GameConstants.Screen.POUR_BTN_H);
 
     public GameScreen(Main game) {
         this.game = game;
         this.camera = new OrthographicCamera();
-        this.camera.setToOrtho(false, GameConstants.SCREEN_WIDTH, GameConstants.SCREEN_HEIGHT);
+        this.camera.setToOrtho(false, GameConstants.Screen.WIDTH, GameConstants.Screen.HEIGHT);
 
-        Cloud cloud = new Cloud(GameConstants.CLOUD_INITIAL_X, GameConstants.CLOUD_INITIAL_Y);
+        Cloud cloud = new Cloud(GameConstants.Cloud.INITIAL_X, GameConstants.Cloud.INITIAL_Y);
         CloudEffects effects = new CloudEffects();
         this.world = new GameWorld(cloud, effects);
 
@@ -69,7 +71,7 @@ public class GameScreen implements Screen {
     private void update(float delta) {
         gameTime += delta;
         inputBlockTimer -= delta;
-        world.setSpeedMultiplier(1f + gameTime / GameConstants.DIFFICULTY_SCALE_TIME);
+        world.setSpeedMultiplier(1f + gameTime / GameConstants.Screen.DIFFICULTY_SCALE_TIME);
         scoreService.update(delta, world.getSpeedMultiplier());
         enemyService.update(delta, world);
         bonusService.update(delta, world);
@@ -84,8 +86,8 @@ public class GameScreen implements Screen {
         flowerService.update(delta, world);
 
         Cloud cloud = world.getCloud();
-        cloud.getPosition().x = Math.max(0, Math.min(GameConstants.SCREEN_WIDTH, cloud.getPosition().x));
-        cloud.getPosition().y = Math.max(GameConstants.FIELD_MIN_Y, Math.min(GameConstants.FIELD_MAX_Y, cloud.getPosition().y));
+        cloud.getPosition().x = Math.max(0, Math.min(GameConstants.Screen.WIDTH, cloud.getPosition().x));
+        cloud.getPosition().y = Math.max(GameConstants.Screen.FIELD_MIN_Y, Math.min(GameConstants.Screen.FIELD_MAX_Y, cloud.getPosition().y));
 
         handleAutoPour();
         handleManualPour();
@@ -93,21 +95,21 @@ public class GameScreen implements Screen {
 
     private void handleAutoPour() {
         Cloud cloud = world.getCloud();
-        if (cloud.getWater() >= GameConstants.AUTO_POUR_THRESHOLD
+        if (cloud.getWater() >= GameConstants.Cloud.AUTO_POUR_THRESHOLD
             && !rainService.isPouring(world)
             && !autoPourTriggered) {
             rainService.pour(cloud, world);
             cloudService.resetAfterRain(cloud);
             autoPourTriggered = true;
         }
-        if (cloud.getWater() < GameConstants.AUTO_POUR_THRESHOLD * 0.5f) {
+        if (cloud.getWater() < GameConstants.Cloud.AUTO_POUR_THRESHOLD * 0.5f) {
             autoPourTriggered = false;
         }
     }
 
     private void handleManualPour() {
         Cloud cloud = world.getCloud();
-        boolean canRain = cloud.getWater() >= GameConstants.RAIN_THRESHOLD && !rainService.isPouring(world);
+        boolean canRain = cloud.getWater() >= GameConstants.Cloud.RAIN_THRESHOLD && !rainService.isPouring(world);
         if (!canRain) return;
         if (Gdx.input.justTouched()) {
             Vector3 touch = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
@@ -115,7 +117,7 @@ public class GameScreen implements Screen {
             if (pourButtonRect.contains(touch.x, touch.y)) {
                 rainService.pour(cloud, world);
                 cloudService.resetAfterRain(cloud);
-                inputBlockTimer = GameConstants.INPUT_BLOCK_ON_POUR;
+                inputBlockTimer = GameConstants.Screen.INPUT_BLOCK_ON_POUR;
             }
         }
     }
@@ -124,12 +126,12 @@ public class GameScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         camera.update();
 
-        boolean canRain = world.getCloud().getWater() >= GameConstants.RAIN_THRESHOLD && !rainService.isPouring(world);
+        boolean canRain = world.getCloud().getWater() >= GameConstants.Cloud.RAIN_THRESHOLD && !rainService.isPouring(world);
 
         game.assets.batch.setProjectionMatrix(camera.combined);
         game.assets.batch.begin();
         game.assets.batch.setColor(Color.WHITE);
-        game.assets.batch.draw(game.assets.backgroundTexture, 0, 0, GameConstants.SCREEN_WIDTH, GameConstants.SCREEN_HEIGHT);
+        game.assets.batch.draw(game.assets.backgroundTexture, 0, 0, GameConstants.Screen.WIDTH, GameConstants.Screen.HEIGHT);
         game.assets.batch.end();
 
         game.assets.renderer.setProjectionMatrix(camera.combined);
@@ -156,7 +158,7 @@ public class GameScreen implements Screen {
         Cloud cloud = world.getCloud();
         game.assets.renderer.setColor(0.25f, 0.25f, 0.25f, 0.7f);
         game.assets.renderer.rect(10, 28, 154, 16);
-        float fill = (cloud.getWater() / GameConstants.WATER_MAX) * 150f;
+        float fill = (cloud.getWater() / GameConstants.Cloud.WATER_MAX) * 150f;
 
         if (cloud.getWater() > 70f) {
             game.assets.renderer.setColor(0.1f, 0.5f, 0.95f, 1f);
@@ -265,7 +267,7 @@ public class GameScreen implements Screen {
 
         if (canRain) {
             game.assets.font.setColor(Color.WHITE);
-            game.assets.font.draw(game.assets.batch, "Pour!", GameConstants.POUR_BTN_X + 28, GameConstants.POUR_BTN_Y + 30);
+            game.assets.font.draw(game.assets.batch, "Pour!", GameConstants.Screen.POUR_BTN_X + 28, GameConstants.Screen.POUR_BTN_Y + 30);
         }
 
         Cloud cloud = world.getCloud();

@@ -27,41 +27,41 @@ public class GameAssets implements Disposable {
         font = new BitmapFont();
         glyph = new GlyphLayout();
 
-        backgroundTexture = new Texture("background.png");
+        backgroundTexture = new Texture("background/background.png");
         backgroundTexture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
 
-        menuBackgroundTexture = new Texture("menu_background.png");
+        menuBackgroundTexture = new Texture("background/menu_background.png");
         menuBackgroundTexture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
 
-        cloudTexture = new Texture("blue_cloud.png");
+        cloudTexture = new Texture("main_characters/blue_cloud.png");
         cloudTexture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
 
-        dropTexture = new Texture("drop.png");
+        dropTexture = new Texture("drop/drop.png");
         dropTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
 
         dropRegion = new TextureRegion(dropTexture, 0, 0, 6, 8);
         rainDropRegion = new TextureRegion(dropTexture, 0, 0, 6, 8);
 
-        specialDropTexture = new Texture("purple_drop.png");
+        specialDropTexture = new Texture("bonus/purple_drop.png");
         specialDropTexture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         specialDropRegion = new TextureRegion(specialDropTexture, 0, 0, specialDropTexture.getWidth(), specialDropTexture.getHeight());
 
-        miniCloudTexture = new Texture("pink_cloud.png");
+        miniCloudTexture = new Texture("bonus/pink_cloud.png");
         miniCloudTexture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         miniCloudRegion = new TextureRegion(miniCloudTexture, 0, 0, miniCloudTexture.getWidth(), miniCloudTexture.getHeight());
 
-        flowersTexture = new Texture("flowers.png");
+        flowersTexture = new Texture("main_characters/flowers.png");
         flowersTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
         initFlowerRegions();
 
-        sunTexture = new Texture("sun.png");
-        windTexture = new Texture("wind2.png");
-        birdTexture = new Texture("bird.png");
-        stormTexture = new Texture("storm.png");
+        sunTexture = new Texture("enemy/sun.png");
+        windTexture = new Texture("enemy/wind2.png");
+        birdTexture = new Texture("enemy/bird.png");
+        stormTexture = new Texture("enemy/storm.png");
 
-        magnetTexture = new Texture("magnit.png");
-        shieldTexture = new Texture("shield.png");
-        rainbowTexture = new Texture("rainbow.png");
+        magnetTexture = new Texture("bonus/magnit.png");
+        shieldTexture = new Texture("bonus/shield.png");
+        rainbowTexture = new Texture("bonus/rainbow.png");
     }
 
     private void initFlowerRegions() {

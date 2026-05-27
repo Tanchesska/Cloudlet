@@ -3,8 +3,8 @@ import com.badlogic.gdx.math.Vector2;
 import java.util.Iterator;
 import java.util.Random;
 import io.github.cloudlet.constants.GameConstants;
-import io.github.cloudlet.domain.Cloud;
-import io.github.cloudlet.domain.CloudEffects;
+import io.github.cloudlet.domain.cloud.Cloud;
+import io.github.cloudlet.domain.cloud.CloudEffects;
 import io.github.cloudlet.domain.Drop;
 import io.github.cloudlet.domain.bonus.Bonus;
 import io.github.cloudlet.domain.bonus.MagnetBonus;
@@ -15,7 +15,7 @@ import io.github.cloudlet.world.GameWorld;
 public class BonusService {
     private final Random random     = new Random();
     private float        spawnTimer = 0f;
-    private float        nextSpawn  = GameConstants.BONUS_SPAWN_MIN;
+    private float        nextSpawn  = GameConstants.Bonus.SPAWN_MIN;
 
     public void update(float delta, GameWorld world) {
         Cloud        cloud   = world.getCloud();
@@ -25,8 +25,8 @@ public class BonusService {
         if (spawnTimer >= nextSpawn) {
             world.getBonuses().add(spawnBonus());
             spawnTimer = 0f;
-            nextSpawn  = GameConstants.BONUS_SPAWN_MIN
-                + random.nextFloat() * GameConstants.BONUS_SPAWN_RANGE;
+            nextSpawn  = GameConstants.Bonus.SPAWN_MIN
+                + random.nextFloat() * GameConstants.Bonus.SPAWN_RANGE;
         }
 
         Iterator<Bonus> it = world.getBonuses().iterator();
@@ -34,11 +34,11 @@ public class BonusService {
             Bonus b = it.next();
             b.update(delta);
 
-            if (!b.isActive() || b.getPosition().x < -GameConstants.BONUS_OFFSCREEN_X) {
+            if (!b.isActive() || b.getPosition().x < -GameConstants.Bonus.OFFSCREEN_X) {
                 it.remove();
                 continue;
             }
-            float touchDist = cloud.getRadius() + GameConstants.BONUS_HIT_RADIUS;
+            float touchDist = cloud.getRadius() + GameConstants.Bonus.HIT_RADIUS;
             if (!b.isDisappearing()
                 && b.getPosition().dst(cloud.getPosition()) < touchDist) {
                 b.onCollect(world);
@@ -89,9 +89,9 @@ public class BonusService {
                 cloud.getPosition().y - drop.getPosition().y
             );
             float dist = dir.len();
-            if (dist < GameConstants.MAGNET_PULL_DIST && dist > 0f) {
+            if (dist < GameConstants.Bonus.MAGNET_PULL_DIST && dist > 0f) {
                 dir.nor();
-                drop.getPosition().mulAdd(dir, GameConstants.MAGNET_PULL_SPEED * delta);
+                drop.getPosition().mulAdd(dir, GameConstants.Bonus.MAGNET_PULL_SPEED * delta);
             }
         }
     }

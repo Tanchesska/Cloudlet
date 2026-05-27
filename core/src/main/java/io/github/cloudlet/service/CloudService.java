@@ -1,13 +1,13 @@
 package io.github.cloudlet.service;
 import com.badlogic.gdx.math.MathUtils;
 import io.github.cloudlet.constants.GameConstants;
-import io.github.cloudlet.domain.Cloud;
+import io.github.cloudlet.domain.cloud.Cloud;
 
 public class CloudService {
     public void update(Cloud cloud, float delta) {
-        cloud.consumeWater(GameConstants.WATER_DRAIN_PER_SEC * delta);
+        cloud.consumeWater(GameConstants.Cloud.WATER_DRAIN_PER_SEC * delta);
         updateSize(cloud);
-        if (cloud.getRadius() <= GameConstants.CLOUD_MIN_RADIUS + GameConstants.CLOUD_DEAD_RADIUS_THRESHOLD
+        if (cloud.getRadius() <= GameConstants.Cloud.MIN_RADIUS + GameConstants.Cloud.DEAD_RADIUS_THRESHOLD
             && cloud.getWater() <= 0f) {
             cloud.setDead(true);
         }
@@ -17,14 +17,14 @@ public class CloudService {
         updateSize(cloud);
     }
     public void resetAfterRain(Cloud cloud) {
-        cloud.setWater(GameConstants.AUTO_POUR_RESET_WATER);
+        cloud.setWater(GameConstants.Cloud.AUTO_POUR_RESET_WATER);
         updateSize(cloud);
     }
     public void updateSize(Cloud cloud) {
         float r = MathUtils.clamp(
-            GameConstants.CLOUD_RADIUS_BASE + cloud.getWater() * GameConstants.CLOUD_RADIUS_FACTOR,
-            GameConstants.CLOUD_MIN_RADIUS,
-            GameConstants.CLOUD_MAX_RADIUS
+            GameConstants.Cloud.RADIUS_BASE + cloud.getWater() * GameConstants.Cloud.RADIUS_FACTOR,
+            GameConstants.Cloud.MIN_RADIUS,
+            GameConstants.Cloud.MAX_RADIUS
         );
         cloud.setRadius(r);
     }

@@ -8,6 +8,6 @@ public class ShieldBonus extends Bonus {
     public void onCollect(GameWorld world) {
         world.cancelEnemyEffects();
         world.getEffects().setShield(true);
-        world.getEffects().setShieldTimer(GameConstants.SHIELD_DURATION);
+        world.getEffects().setShieldTimer(GameConstants.Bonus.SHIELD_DURATION);
     }
 }

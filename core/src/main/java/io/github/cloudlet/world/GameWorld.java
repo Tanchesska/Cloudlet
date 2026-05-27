@@ -1,8 +1,8 @@
 package io.github.cloudlet.world;
 import java.util.ArrayList;
 import java.util.List;
-import io.github.cloudlet.domain.Cloud;
-import io.github.cloudlet.domain.CloudEffects;
+import io.github.cloudlet.domain.cloud.Cloud;
+import io.github.cloudlet.domain.cloud.CloudEffects;
 import io.github.cloudlet.domain.Drop;
 import io.github.cloudlet.domain.Flower;
 import io.github.cloudlet.domain.RainDrop;

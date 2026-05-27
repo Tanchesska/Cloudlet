@@ -10,10 +10,10 @@ public class FlowerService {
     private final ScoreService scoreService;
     public FlowerService(ScoreService scoreService, GameWorld world) {
         this.scoreService = scoreService;
-        for (int i = 0; i < GameConstants.FLOWER_COUNT; i++) {
+        for (int i = 0; i < GameConstants.Flower.COUNT; i++) {
             float x    = 900f + i * 300f;
             int   type = MathUtils.random(0, 2);
-            world.getFlowers().add(new Flower(x, GameConstants.FLOWER_Y, type));
+            world.getFlowers().add(new Flower(x, GameConstants.Flower.POS_Y, type));
         }
     }
     public void update(float delta, GameWorld world) {
@@ -22,18 +22,18 @@ public class FlowerService {
             handleRainCollision(flower, world);
         }
     }
-    private void moveFlower(Flower flower, float delta, float speedMultiplier) {
-        flower.getPosition().x -= GameConstants.FLOWER_SPEED * speedMultiplier * delta;
-        flower.getHitbox().x    = flower.getPosition().x - 20f;
-        flower.decrementHitCooldown(delta);
-
-        if (flower.getPosition().x < -80f) {
-            repositionFlower(flower, world(flower), false);
-        }
-    }
+//    private void moveFlower(Flower flower, float delta, float speedMultiplier) {
+//        flower.getPosition().x -= GameConstants.Flower.SPEED * speedMultiplier * delta;
+//        flower.getHitbox().x    = flower.getPosition().x - 20f;
+//        flower.decrementHitCooldown(delta);
+//
+//        if (flower.getPosition().x < -80f) {
+//            repositionFlower(flower, world(flower), false);
+//        }
+//    }
     private void moveFlower(Flower flower, float delta, float speedMultiplier,
                             GameWorld world) {
-        flower.getPosition().x -= GameConstants.FLOWER_SPEED * speedMultiplier * delta;
+        flower.getPosition().x -= GameConstants.Flower.SPEED * speedMultiplier * delta;
         flower.getHitbox().x    = flower.getPosition().x - 20f;
         flower.decrementHitCooldown(delta);
         if (flower.getPosition().x < -80f) {
@@ -49,7 +49,7 @@ public class FlowerService {
             if (!flower.getHitbox().contains(drop.getX(), drop.getY())) continue;
 
             it.remove();
-            flower.setHitCooldown(GameConstants.FLOWER_HIT_COOLDOWN);
+            flower.setHitCooldown(GameConstants.Flower.HIT_COOLDOWN);
             flower.incrementWaterings();
             scoreService.addFlowerScore(
                 flower.getWaterings(),
@@ -65,15 +65,15 @@ public class FlowerService {
             case 1: flower.setStage(1); break;
             case 2: flower.setStage(2); break;
             case 3: flower.setStage(3); break;
-            case GameConstants.FLOWER_MAX_WATERINGS:
+            case GameConstants.Flower.MAX_WATERINGS:
                 repositionFlower(flower, world, true);
                 break;
         }
     }
     private void repositionFlower(Flower flower, GameWorld world, boolean resetStage) {
         float farthestX = getFarthestX(world);
-        float dist      = GameConstants.FLOWER_MIN_DIST
-            + MathUtils.random(GameConstants.FLOWER_EXTRA_DIST);
+        float dist      = GameConstants.Flower.MIN_DIST
+            + MathUtils.random(GameConstants.Flower.EXTRA_DIST);
         flower.reposition(farthestX + dist);
         if (resetStage) {
             flower.setStage(0);
@@ -88,5 +88,5 @@ public class FlowerService {
         }
         return max;
     }
-    private GameWorld world(Flower flower) { return null; }
+//    private GameWorld world(Flower flower) { return null; }
 }

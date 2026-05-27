@@ -3,7 +3,7 @@ package io.github.cloudlet.service;
 import java.util.Iterator;
 import java.util.Random;
 import io.github.cloudlet.constants.GameConstants;
-import io.github.cloudlet.domain.Cloud;
+import io.github.cloudlet.domain.cloud.Cloud;
 import io.github.cloudlet.domain.RainDrop;
 import io.github.cloudlet.world.GameWorld;
 public class RainService {
@@ -12,12 +12,12 @@ public class RainService {
         float cx = cloud.getPosition().x;
         float cy = cloud.getPosition().y;
         float r  = cloud.getRadius();
-        for (int i = 0; i < GameConstants.RAIN_DROP_COUNT; i++) {
+        for (int i = 0; i < GameConstants.Rain.DROP_COUNT; i++) {
             float x    = cx + (random.nextFloat() * 2f - 1f) * r;
             float y    = cy - r * 0.2f;
-            float velX = (random.nextFloat() * 2f - 1f) * GameConstants.RAIN_VEL_X_RANGE;
-            float velY = -(GameConstants.RAIN_VEL_Y_BASE
-                + random.nextFloat() * GameConstants.RAIN_VEL_Y_RANGE);
+            float velX = (random.nextFloat() * 2f - 1f) * GameConstants.Rain.VEL_X_RANGE;
+            float velY = -(GameConstants.Rain.VEL_Y_BASE
+                + random.nextFloat() * GameConstants.Rain.VEL_Y_RANGE);
             world.getRainDrops().add(new RainDrop(x, y, velX, velY));
         }
     }
@@ -26,7 +26,7 @@ public class RainService {
         while (it.hasNext()) {
             RainDrop rd = it.next();
             rd.update(delta);
-            if (rd.getY() < GameConstants.RAIN_FLOOR_Y) {
+            if (rd.getY() < GameConstants.Rain.FLOOR_Y) {
                 it.remove();
             }
         }

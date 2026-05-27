@@ -9,20 +9,20 @@ public class SunEnemy extends Enemy {
         if (!active) return;
 
         if (dying) {
-            alpha -= delta * GameConstants.ENEMY_DYING_FADE_SPEED;
+            alpha -= delta * GameConstants.Enemy.DYING_FADE_SPEED;
             if (alpha <= 0f) active = false;
             return;
         }
-        float touchDist = world.getCloud().getRadius() + GameConstants.ENEMY_HIT_RADIUS;
+        float touchDist = world.getCloud().getRadius() + GameConstants.Enemy.HIT_RADIUS;
         if (!triggered && position.dst(world.getCloud().getPosition()) < touchDist) {
             if (!world.getEffects().hasShield()) {
                 triggered   = true;
-                effectTimer = GameConstants.SUN_EFFECT_DURATION;
+                effectTimer = GameConstants.Enemy.SUN_EFFECT_DURATION;
             }
         }
         if (triggered) {
             effectTimer -= delta;
-            world.getCloud().consumeWater(GameConstants.SUN_WATER_DRAIN_PER_SEC * delta);
+            world.getCloud().consumeWater(GameConstants.Enemy.SUN_WATER_DRAIN_PER_SEC * delta);
             if (effectTimer <= 0f) startDying();
         }
     }

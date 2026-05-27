@@ -1,4 +1,4 @@
-package io.github.cloudlet.domain;
+package io.github.cloudlet.domain.cloud;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import io.github.cloudlet.constants.GameConstants;
@@ -13,12 +13,12 @@ public class Cloud implements GameEntity {
     private boolean dead = false;
     public Cloud(float x, float y) {
         this.position = new Vector2(x, y);
-        this.radius   = GameConstants.CLOUD_INITIAL_RADIUS;
-        this.water    = GameConstants.CLOUD_INITIAL_WATER;
-        this.speed    = GameConstants.CLOUD_SPEED;
+        this.radius   = GameConstants.Cloud.INITIAL_RADIUS;
+        this.water    = GameConstants.Cloud.INITIAL_WATER;
+        this.speed    = GameConstants.Cloud.SPEED;
     }
     public void setWater(float amount) {
-        this.water = MathUtils.clamp(amount, 0f, GameConstants.WATER_MAX);
+        this.water = MathUtils.clamp(amount, 0f, GameConstants.Cloud.WATER_MAX);
     }
     public void addWater(float amount) {
         setWater(this.water + amount);

@@ -10,23 +10,23 @@ public class WindEnemy extends Enemy {
         if (!active) return;
 
         if (dying) {
-            alpha -= delta * GameConstants.ENEMY_DYING_FADE_SPEED;
+            alpha -= delta * GameConstants.Enemy.DYING_FADE_SPEED;
             if (alpha <= 0f) active = false;
             return;
         }
-        float touchDist = world.getCloud().getRadius() + GameConstants.ENEMY_HIT_RADIUS;
+        float touchDist = world.getCloud().getRadius() + GameConstants.Enemy.HIT_RADIUS;
         if (!triggered && position.dst(world.getCloud().getPosition()) < touchDist) {
             if (!world.getEffects().hasShield()) {
                 triggered   = true;
-                effectTimer = GameConstants.WIND_DURATION;
+                effectTimer = GameConstants.Enemy.WIND_DURATION;
                 world.getEffects().setBlocked(true);
             }
         }
         if (triggered) {
             effectTimer -= delta;
-            world.getCloud().getPosition().x -= GameConstants.WIND_PUSH_SPEED * delta;
+            world.getCloud().getPosition().x -= GameConstants.Enemy.WIND_PUSH_SPEED * delta;
             world.getEffects().setWindRotation(
-                world.getEffects().getWindRotation() - GameConstants.WIND_ROTATION_SPEED * delta
+                world.getEffects().getWindRotation() - GameConstants.Enemy.WIND_ROTATION_SPEED * delta
             );
             if (effectTimer <= 0f) {
                 cancelEffect(world);
