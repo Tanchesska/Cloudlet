@@ -1,6 +1,8 @@
 package io.github.cloudlet.world;
 import java.util.ArrayList;
 import java.util.List;
+import io.github.cloudlet.achievement.GameStats;
+import io.github.cloudlet.biome.BiomeManager;
 import io.github.cloudlet.domain.cloud.Cloud;
 import io.github.cloudlet.domain.cloud.CloudEffects;
 import io.github.cloudlet.domain.Drop;
@@ -19,6 +21,8 @@ public class GameWorld {
     private final List<Flower>   flowers   = new ArrayList<>();
     private float   speedMultiplier = 1f;
     private boolean gameOver        = false;
+    private final BiomeManager biomeManager = new BiomeManager();
+    private final GameStats    gameStats    = new GameStats();
 
     public GameWorld(Cloud cloud, CloudEffects effects) {
         this.cloud   = cloud;
@@ -44,4 +48,6 @@ public class GameWorld {
     public void           setSpeedMultiplier(float v) { speedMultiplier = v; }
     public boolean        isGameOver()         { return gameOver; }
     public void           setGameOver(boolean v)      { gameOver = v; }
+    public BiomeManager getBiomeManager() { return biomeManager; }
+    public GameStats    getGameStats()    { return gameStats; }
 }

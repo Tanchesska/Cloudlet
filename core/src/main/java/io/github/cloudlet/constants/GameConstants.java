@@ -89,6 +89,9 @@ public final class GameConstants {
         public static final float WATER_NORMAL = 5f;
         public static final float WATER_SPECIAL = 10f;
         public static final float WATER_CLOUD = 12f;
+
+        // Кислотная капля
+        public static final float ACID_INVERT_DURATION = 3f;
     }
 
     // Дождь
@@ -115,5 +118,28 @@ public final class GameConstants {
         public static final int SCORE_2 = 50;
         public static final int SCORE_3 = 70;
         public static final int SCORE_4 = 100;
+    }
+
+    // Биомы
+    public static final class Biome {
+        public static final int   SCORE_THRESHOLD_DESERT = 300;
+        public static final int   SCORE_THRESHOLD_TUNDRA = 600;
+        public static final int   SCORE_THRESHOLD_TOXIC  = 900;
+        public static final int   CYCLE_LENGTH           = 1200;
+        public static final float TRANSITION_DISPLAY_DURATION = 3f;
+    }
+
+    // Ачивки
+    public static final class Achievement {
+        /** Сколько секунд подряд вода должна быть <= 30 % (ачивка «Засуха») */
+        public static final float DROUGHT_LOW_WATER_TIME = 60f;
+        /** Порог воды в % для ачивки «Засуха» */
+        public static final float DROUGHT_WATER_THRESHOLD = 30f;
+        /** Количество StormEnemy подряд без щита (ачивка «Громоотвод») */
+        public static final int   LIGHTNING_ROD_STORMS = 3;
+        /** Количество мини-тучек за игру (ачивка «Своя атмосфера») */
+        public static final int   OWN_ATMOSPHERE_CLOUDS = 10;
+        /** Сколько секунд отображается плашка ачивки */
+        public static final float NOTIFICATION_DURATION = 4f;
     }
 }

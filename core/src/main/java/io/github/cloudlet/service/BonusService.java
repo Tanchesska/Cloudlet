@@ -43,6 +43,7 @@ public class BonusService {
                 && b.getPosition().dst(cloud.getPosition()) < touchDist) {
                 b.onCollect(world);
                 b.setDisappearing(true);
+                world.getGameStats().bonusPickedUp = true;
             }
         }
 
@@ -50,7 +51,6 @@ public class BonusService {
         tickShield(delta, effects);
         tickRainbow(delta, effects);
     }
-
     private void tickMagnet(float delta, GameWorld world) {
         CloudEffects effects = world.getEffects();
         if (effects.getMagnetTimer() > 0f) {

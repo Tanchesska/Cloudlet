@@ -1,6 +1,7 @@
 package io.github.cloudlet.service;
 import java.util.List;
 import java.util.Random;
+import io.github.cloudlet.biome.Biome;
 import io.github.cloudlet.constants.GameConstants;
 import io.github.cloudlet.domain.enemy.BirdEnemy;
 import io.github.cloudlet.domain.enemy.Enemy;
@@ -24,21 +25,25 @@ public class EnemyService {
         }
         spawnTimer += delta;
         if (spawnTimer >= nextSpawn) {
-            enemies.add(spawnEnemy());
+            Biome biome = world.getBiomeManager().getCurrentBiome();
+            enemies.add(spawnEnemy(biome));
             spawnTimer = 0f;
             nextSpawn  = GameConstants.Enemy.SPAWN_MIN
                 + random.nextFloat() * GameConstants.Enemy.SPAWN_RANGE;
         }
     }
-    private Enemy spawnEnemy() {
-        float x   = 850f;
-        float y   = 140 + random.nextInt(260);
-        int   idx = random.nextInt(4);
-        switch (idx) {
-            case 0:  return new SunEnemy(x, y);
-            case 1:  return new WindEnemy(x, y);
-            case 2:  return new BirdEnemy(x, y);
-            default: return new StormEnemy(x, y);
-        }
+    private Enemy spawnEnemy(Biome biome) {
+        float x = 850f;
+        float y = 140 + random.nextInt(260);
+
+        int sunWeight = (biome != null) ? biome.getSunSpawnWeight() : 1;
+
+        int total = sunWeight + 3;
+        int roll  = random.nextInt(total);
+
+        if (roll < sunWeight)            return new SunEnemy(x, y);
+        if (roll == sunWeight)           return new WindEnemy(x, y);
+        if (roll == sunWeight + 1)       return new BirdEnemy(x, y);
+        return new StormEnemy(x, y);
     }
 }
