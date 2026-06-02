@@ -16,8 +16,7 @@ public class GameAssets implements Disposable {
     public BitmapFont    font;
     public GlyphLayout   glyph;
     public Texture backgroundTexture, menuBackgroundTexture, cloudTexture,
-        dropTexture, specialDropTexture, miniCloudTexture,
-        flowersTexture, sunTexture,
+        dropTexture, specialDropTexture, miniCloudTexture, sunTexture,
         magnetTexture, shieldTexture, rainbowTexture;
 
     public Texture desertBackgroundTexture;
@@ -30,9 +29,7 @@ public class GameAssets implements Disposable {
     public TextureRegion[][][] flowerBiomeRegions;
     public TextureRegion[] specialDropBiomeRegion;
     public TextureRegion[] miniCloudBiomeRegion;
-    private Texture flowerDesertTexture;
-    private Texture flowerTundraTexture;
-    private Texture flowerToxicTexture;
+    private com.badlogic.gdx.graphics.Texture[] flowerTextures;
     private Texture birdMeadow, windMeadow, stormMeadow;
     private Texture birdDesert, windDesert, stormDesert;
     private Texture birdTundra, windTundra, stormTundra;
@@ -86,8 +83,6 @@ public class GameAssets implements Disposable {
         shieldTexture  = new Texture("bonus/shield.png");
         rainbowTexture = new Texture("bonus/rainbow.png");
 
-        flowersTexture = new Texture("main_characters/flowers.png");
-        flowersTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
 
         initEnemyTextures();
         initFlowerBiomeRegions();
@@ -128,76 +123,46 @@ public class GameAssets implements Disposable {
         };
     }
     private void initFlowerBiomeRegions() {
-        flowerBiomeRegions = new TextureRegion[4][3][4];
+        com.badlogic.gdx.utils.JsonReader reader = new com.badlogic.gdx.utils.JsonReader();
+        com.badlogic.gdx.utils.JsonValue biomes = reader.parse(com.badlogic.gdx.Gdx.files.internal("config/flowers_config.json"));
 
-        flowerBiomeRegions[0][0][0] = new TextureRegion(flowersTexture, 160, 192, 32, 32);
-        flowerBiomeRegions[0][0][1] = new TextureRegion(flowersTexture, 128, 192, 32, 32);
-        flowerBiomeRegions[0][0][2] = new TextureRegion(flowersTexture,  96, 192, 32, 32);
-        flowerBiomeRegions[0][0][3] = new TextureRegion(flowersTexture,  64, 192, 32, 32);
+        int biomeCount = biomes.size;
+        flowerBiomeRegions = new com.badlogic.gdx.graphics.g2d.TextureRegion[biomeCount][][];
+        flowerTextures = new com.badlogic.gdx.graphics.Texture[biomeCount];
 
-        flowerBiomeRegions[0][1][0] = new TextureRegion(flowersTexture,  96,   0, 32, 32);
-        flowerBiomeRegions[0][1][1] = new TextureRegion(flowersTexture, 192, 160, 32, 32);
-        flowerBiomeRegions[0][1][2] = new TextureRegion(flowersTexture,   0, 192, 32, 32);
-        flowerBiomeRegions[0][1][3] = new TextureRegion(flowersTexture,  32, 192, 32, 32);
+        for (int b = 0; b < biomeCount; b++) {
+            com.badlogic.gdx.utils.JsonValue biomeJson = biomes.get(b);
 
-        flowerBiomeRegions[0][2][0] = new TextureRegion(flowersTexture,  32, 224, 32, 32);
-        flowerBiomeRegions[0][2][1] = new TextureRegion(flowersTexture,   0, 224, 32, 32);
-        flowerBiomeRegions[0][2][2] = new TextureRegion(flowersTexture, 224,  96, 32, 32);
-        flowerBiomeRegions[0][2][3] = new TextureRegion(flowersTexture, 128,  96, 32, 32);
+            String texturePath = biomeJson.getString("texture");
+            com.badlogic.gdx.graphics.Texture texture = new com.badlogic.gdx.graphics.Texture(com.badlogic.gdx.Gdx.files.internal(texturePath));
+            texture.setFilter(com.badlogic.gdx.graphics.Texture.TextureFilter.Nearest, com.badlogic.gdx.graphics.Texture.TextureFilter.Nearest);
 
-        flowerDesertTexture = new Texture("main_characters/flowers_desert.png");
-        flowerDesertTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+            flowerTextures[b] = texture;
 
-        flowerBiomeRegions[1][0][0] = new TextureRegion(flowerDesertTexture, 0, 0, 24, 32);
-        flowerBiomeRegions[1][0][1] = new TextureRegion(flowerDesertTexture, 24, 0, 24, 32);
-        flowerBiomeRegions[1][0][2] = new TextureRegion(flowerDesertTexture,  48, 0, 24, 32);
-        flowerBiomeRegions[1][0][3] = new TextureRegion(flowerDesertTexture,  72, 0, 24, 32);
+            int defaultW = biomeJson.getInt("tileWidth", 0);
+            int defaultH = biomeJson.getInt("tileHeight", 0);
 
-        flowerBiomeRegions[1][1][0] = new TextureRegion(flowerDesertTexture,  0,   32, 24, 32);
-        flowerBiomeRegions[1][1][1] = new TextureRegion(flowerDesertTexture, 24, 32, 24, 32);
-        flowerBiomeRegions[1][1][2] = new TextureRegion(flowerDesertTexture,   48, 32, 24, 32);
-        flowerBiomeRegions[1][1][3] = new TextureRegion(flowerDesertTexture,  72, 32, 24, 32);
+            com.badlogic.gdx.utils.JsonValue flowersJson = biomeJson.get("flowers");
+            int typeCount = flowersJson.size;
+            flowerBiomeRegions[b] = new com.badlogic.gdx.graphics.g2d.TextureRegion[typeCount][];
 
-        flowerBiomeRegions[1][2][0] = new TextureRegion(flowerDesertTexture,  0, 64, 24, 32);
-        flowerBiomeRegions[1][2][1] = new TextureRegion(flowerDesertTexture,   24, 64, 24, 32);
-        flowerBiomeRegions[1][2][2] = new TextureRegion(flowerDesertTexture, 48,  64, 24, 32);
-        flowerBiomeRegions[1][2][3] = new TextureRegion(flowerDesertTexture, 72,  64, 24, 32);
+            for (int t = 0; t < typeCount; t++) {
+                com.badlogic.gdx.utils.JsonValue flowerJson = flowersJson.get(t);
+                com.badlogic.gdx.utils.JsonValue stagesJson = flowerJson.get("stages");
+                int stageCount = stagesJson.size;
+                flowerBiomeRegions[b][t] = new com.badlogic.gdx.graphics.g2d.TextureRegion[stageCount];
 
-        flowerTundraTexture = new Texture("main_characters/flowers_tundra.png");
-        flowerTundraTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+                for (int s = 0; s < stageCount; s++) {
+                    com.badlogic.gdx.utils.JsonValue stage = stagesJson.get(s);
+                    int x = stage.getInt("x");
+                    int y = stage.getInt("y");
+                    int w = stage.getInt("w", defaultW);
+                    int h = stage.getInt("h", defaultH);
 
-        flowerBiomeRegions[2][0][0] = new TextureRegion(flowerTundraTexture, 0, 0, 256, 341);
-        flowerBiomeRegions[2][0][1] = new TextureRegion(flowerTundraTexture, 256, 0, 256, 341);
-        flowerBiomeRegions[2][0][2] = new TextureRegion(flowerTundraTexture,  512, 0, 256, 341);
-        flowerBiomeRegions[2][0][3] = new TextureRegion(flowerTundraTexture,  768, 0, 256, 341);
-
-        flowerBiomeRegions[2][1][0] = new TextureRegion(flowerTundraTexture,  0,   341, 256, 341);
-        flowerBiomeRegions[2][1][1] = new TextureRegion(flowerTundraTexture, 256, 341, 256, 341);
-        flowerBiomeRegions[2][1][2] = new TextureRegion(flowerTundraTexture,   512, 341, 256, 341);
-        flowerBiomeRegions[2][1][3] = new TextureRegion(flowerTundraTexture,  768, 341, 256, 341);
-
-        flowerBiomeRegions[2][2][0] = new TextureRegion(flowerTundraTexture,  0, 682, 256, 341);
-        flowerBiomeRegions[2][2][1] = new TextureRegion(flowerTundraTexture,   256, 682, 256, 341);
-        flowerBiomeRegions[2][2][2] = new TextureRegion(flowerTundraTexture, 512,  682, 256, 341);
-        flowerBiomeRegions[2][2][3] = new TextureRegion(flowerTundraTexture, 768,  682, 256, 341);
-
-        flowerToxicTexture = new Texture("main_characters/flowers_toxic.png");
-        flowerToxicTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
-
-        flowerBiomeRegions[3][0][0] = new TextureRegion(flowerToxicTexture, 0, 0, 310, 310);
-        flowerBiomeRegions[3][0][1] = new TextureRegion(flowerToxicTexture, 310, 0, 310, 310);
-        flowerBiomeRegions[3][0][2] = new TextureRegion(flowerToxicTexture,  620, 0, 310, 310);
-        flowerBiomeRegions[3][0][3] = new TextureRegion(flowerToxicTexture,  930, 0, 310, 310);
-
-        flowerBiomeRegions[3][1][0] = new TextureRegion(flowerToxicTexture,  0,   310, 310, 276);
-        flowerBiomeRegions[3][1][1] = new TextureRegion(flowerToxicTexture, 310, 310, 310, 276);
-        flowerBiomeRegions[3][1][2] = new TextureRegion(flowerToxicTexture,   620, 310, 310, 276);
-        flowerBiomeRegions[3][1][3] = new TextureRegion(flowerToxicTexture,  930, 310, 310, 276);
-
-        flowerBiomeRegions[3][2][0] = new TextureRegion(flowerToxicTexture,  0, 586, 290, 374);
-        flowerBiomeRegions[3][2][1] = new TextureRegion(flowerToxicTexture,   290, 586, 330, 374);
-        flowerBiomeRegions[3][2][2] = new TextureRegion(flowerToxicTexture, 620,  586, 310, 374);
-        flowerBiomeRegions[3][2][3] = new TextureRegion(flowerToxicTexture, 930,  586, 310, 374);
+                    flowerBiomeRegions[b][t][s] = new com.badlogic.gdx.graphics.g2d.TextureRegion(texture, x, y, w, h);
+                }
+            }
+        }
     }
     private void initDropBiomeRegions() {
         specialDropDesert = new Texture("bonus/special_drop_desert.png");
@@ -243,7 +208,6 @@ public class GameAssets implements Disposable {
         specialDropTexture.dispose();
         miniCloudTexture.dispose();
         acidDropTexture.dispose();
-        flowersTexture.dispose();
         sunTexture.dispose();
         magnetTexture.dispose();
         shieldTexture.dispose();
@@ -254,9 +218,11 @@ public class GameAssets implements Disposable {
         birdTundra.dispose();  windTundra.dispose();  stormTundra.dispose();
         birdToxic.dispose();   windToxic.dispose();   stormToxic.dispose();
 
-        if (flowerDesertTexture != null) flowerDesertTexture.dispose();
-        if (flowerTundraTexture != null) flowerTundraTexture.dispose();
-        if (flowerToxicTexture  != null) flowerToxicTexture.dispose();
+        if (flowerTextures != null) {
+            for (com.badlogic.gdx.graphics.Texture tex : flowerTextures) {
+                if (tex != null) tex.dispose();
+            }
+        }
 
         if (specialDropDesert != null) specialDropDesert.dispose();
         if (specialDropTundra != null) specialDropTundra.dispose();

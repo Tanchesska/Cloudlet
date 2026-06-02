@@ -4,6 +4,13 @@ public final class GameConstants {
 
     private GameConstants() {}
 
+    public static final class Textures {
+        public static final String BACKGROUND_MEADOW = "background/background.png";
+        public static final String BACKGROUND_DESERT = "background/desert_background.png";
+        public static final String BACKGROUND_TUNDRA = "background/tundra_background.png";
+        public static final String BACKGROUND_TOXIC  = "background/toxic_background.png";
+    }
+
     //размеры окна, границы мира и кнопки
     public static final class Screen {
         public static final float WIDTH = 800f;

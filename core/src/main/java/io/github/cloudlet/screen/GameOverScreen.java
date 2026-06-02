@@ -34,6 +34,17 @@ public class GameOverScreen implements Screen {
     private static final float ACH_CARD_H   = 44f;
     private static final float Y_BUTTON     = 75f;
     private static final float Y_HINT       = 32f;
+    private static final float ACH_PANEL_WIDTH        = 500f;
+    private static final float ACH_PANEL_PADDING_SIDE = 10f;
+    private static final float ACH_PANEL_EXTRA_H      = 6f;
+    private static final float ACH_TOP_BORDER_H       = 3f;
+    private static final float ACH_DIVIDER_H          = 1f;
+    private static final float ACH_TITLE_OFFSET_X     = 12f;
+    private static final float ACH_TITLE_OFFSET_Y     = 6f;
+    private static final float ACH_DESC_OFFSET_X      = 20f;
+    private static final float ACH_DESC_OFFSET_Y      = 22f;
+    private static final float ACH_PANEL_BG_ALPHA     = 0.90f;
+    private static final float ACH_DIVIDER_COLOR      = 0.28f;
 
     public GameOverScreen(Main game, int score, int bestScore) {
         this(game, score, bestScore, null);
@@ -75,21 +86,21 @@ public class GameOverScreen implements Screen {
 
         if (newAchievements != null && !newAchievements.isEmpty()) {
             int   count  = newAchievements.size();
-            float cardW  = 500f;
+            float cardW  =  ACH_PANEL_WIDTH;
             float cardX  = (W - cardW) / 2f;
-            float totalH = count * ACH_CARD_H + 6f;
+            float totalH = count * ACH_CARD_H + ACH_PANEL_EXTRA_H;
             float panelY = Y_ACH_START - totalH;
 
-            game.assets.renderer.setColor(0.07f, 0.07f, 0.07f, 0.90f);
+            game.assets.renderer.setColor(0.07f, 0.07f, 0.07f, ACH_PANEL_BG_ALPHA);
             game.assets.renderer.rect(cardX, panelY, cardW, totalH);
 
             game.assets.renderer.setColor(GOLD);
-            game.assets.renderer.rect(cardX, panelY + totalH - 3f, cardW, 3f);
+            game.assets.renderer.rect(cardX, panelY + totalH - ACH_TOP_BORDER_H, cardW, ACH_TOP_BORDER_H);
 
-            game.assets.renderer.setColor(0.28f, 0.28f, 0.28f, 1f);
+            game.assets.renderer.setColor(ACH_DIVIDER_COLOR, ACH_DIVIDER_COLOR, ACH_DIVIDER_H, 1f);
             for (int i = 1; i < count; i++) {
-                float lineY = panelY + totalH - 3f - i * ACH_CARD_H;
-                game.assets.renderer.rect(cardX + 10f, lineY, cardW - 20f, 1f);
+                float lineY = panelY + totalH - ACH_TOP_BORDER_H - i * ACH_CARD_H;
+                game.assets.renderer.rect(cardX + ACH_PANEL_PADDING_SIDE, lineY, cardW - ACH_PANEL_PADDING_SIDE*2, ACH_DIVIDER_H);
             }
         }
 
@@ -109,9 +120,9 @@ public class GameOverScreen implements Screen {
 
         if (newAchievements != null && !newAchievements.isEmpty()) {
             int   count  = newAchievements.size();
-            float cardW  = 500f;
+            float cardW  = ACH_PANEL_WIDTH;
             float cardX  = (W - cardW) / 2f;
-            float totalH = count * ACH_CARD_H + 6f;
+            float totalH = count * ACH_CARD_H + ACH_PANEL_EXTRA_H;
             float panelY = Y_ACH_START - totalH;
 
             game.assets.font.getData().setScale(0.95f);
@@ -124,15 +135,15 @@ public class GameOverScreen implements Screen {
                 game.assets.font.setColor(GOLD);
                 game.assets.font.draw(game.assets.batch,
                     "[+] " + a.title,
-                    cardX + 12f,
-                    itemTop - 6f);
+                    cardX + ACH_TITLE_OFFSET_X,
+                    itemTop - ACH_TITLE_OFFSET_Y);
 
                 game.assets.font.getData().setScale(0.78f);
                 game.assets.font.setColor(0.72f, 0.72f, 0.72f, 1f);
                 game.assets.font.draw(game.assets.batch,
                     a.description,
-                    cardX + 20f,
-                    itemTop - 22f);
+                    cardX + ACH_DESC_OFFSET_X,
+                    itemTop - ACH_DESC_OFFSET_Y);
 
                 itemTop -= ACH_CARD_H;
             }
