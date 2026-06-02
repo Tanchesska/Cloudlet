@@ -21,16 +21,8 @@ public class FlowerService {
             moveFlower(flower, delta, world.getSpeedMultiplier(), world);
             handleRainCollision(flower, world);
         }
+        trackRainMiss(world);
     }
-//    private void moveFlower(Flower flower, float delta, float speedMultiplier) {
-//        flower.getPosition().x -= GameConstants.Flower.SPEED * speedMultiplier * delta;
-//        flower.getHitbox().x    = flower.getPosition().x - 20f;
-//        flower.decrementHitCooldown(delta);
-//
-//        if (flower.getPosition().x < -80f) {
-//            repositionFlower(flower, world(flower), false);
-//        }
-//    }
     private void moveFlower(Flower flower, float delta, float speedMultiplier,
                             GameWorld world) {
         flower.getPosition().x -= GameConstants.Flower.SPEED * speedMultiplier * delta;
@@ -60,16 +52,36 @@ public class FlowerService {
             break;
         }
     }
+    private void trackRainMiss(GameWorld world) {
+        boolean anyDropActive = !world.getRainDrops().isEmpty();
+        if (!anyDropActive) return;
+
+        boolean anyHit = false;
+        for (Flower f : world.getFlowers()) {
+            if (f.getHitCooldown() >= GameConstants.Flower.HIT_COOLDOWN * 0.9f) {
+                anyHit = true;
+                break;
+            }
+        }
+        if (!anyHit) {
+            world.getGameStats().currentFlowerNoMiss = false;
+        }
+    }
+
     private void growFlower(Flower flower, GameWorld world) {
         switch (flower.getWaterings()) {
             case 1: flower.setStage(1); break;
             case 2: flower.setStage(2); break;
             case 3: flower.setStage(3); break;
             case GameConstants.Flower.MAX_WATERINGS:
+                if (world.getGameStats().currentFlowerNoMiss) {
+                    world.getGameStats().pacifistAchieved = true;
+                }
                 repositionFlower(flower, world, true);
                 break;
         }
     }
+
     private void repositionFlower(Flower flower, GameWorld world, boolean resetStage) {
         float farthestX = getFarthestX(world);
         float dist      = GameConstants.Flower.MIN_DIST
@@ -79,8 +91,10 @@ public class FlowerService {
             flower.setStage(0);
             flower.resetWaterings();
             flower.setType(MathUtils.random(0, 2));
+            world.getGameStats().currentFlowerNoMiss = true;
         }
     }
+
     private float getFarthestX(GameWorld world) {
         float max = 0f;
         for (Flower f : world.getFlowers()) {
@@ -88,5 +102,4 @@ public class FlowerService {
         }
         return max;
     }
-//    private GameWorld world(Flower flower) { return null; }
 }

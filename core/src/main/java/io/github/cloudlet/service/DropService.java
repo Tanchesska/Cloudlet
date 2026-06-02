@@ -2,6 +2,7 @@ package io.github.cloudlet.service;
 import com.badlogic.gdx.math.MathUtils;
 import java.util.Iterator;
 import java.util.Random;
+import io.github.cloudlet.biome.Biome;
 import io.github.cloudlet.constants.GameConstants;
 import io.github.cloudlet.domain.cloud.Cloud;
 import io.github.cloudlet.domain.Drop;
@@ -16,14 +17,16 @@ public class DropService {
     public void update(float delta, GameWorld world) {
         Cloud cloud           = world.getCloud();
         float speedMultiplier = world.getSpeedMultiplier();
+        Biome biome           = world.getBiomeManager().getCurrentBiome();
 
         spawnTimer += delta;
         float spawnInterval = Math.max(0.15f,
             GameConstants.Drop.SPAWN_INTERVAL / speedMultiplier);
         if (spawnTimer > spawnInterval) {
             spawnTimer = 0f;
-            world.getDrops().add(spawnDrop());
+            world.getDrops().add(spawnDrop(biome));
         }
+
         Iterator<Drop> it = world.getDrops().iterator();
         while (it.hasNext()) {
             Drop drop = it.next();
@@ -34,7 +37,7 @@ public class DropService {
             float dist = (float) Math.sqrt(dx * dx + dy * dy);
 
             if (dist < cloud.getRadius() + drop.getRadius()) {
-                cloudService.addWater(cloud, waterForType(drop.getType()));
+                handleCollect(drop, world);
                 it.remove();
                 continue;
             }
@@ -42,20 +45,46 @@ public class DropService {
                 it.remove();
             }
         }
+
+        if (world.getEffects().isInverted()) {
+            float t = world.getEffects().getInvertedTimer() - delta;
+            world.getEffects().setInvertedTimer(Math.max(0f, t));
+        }
     }
-    private Drop spawnDrop() {
+    private void handleCollect(Drop drop, GameWorld world) {
+        switch (drop.getType()) {
+            case ACID:
+                world.getEffects().setInvertedTimer(GameConstants.Drop.ACID_INVERT_DURATION);
+                break;
+            case MINI_CLOUD:
+                cloudService.addWater(world.getCloud(), GameConstants.Drop.WATER_CLOUD);
+                world.getGameStats().miniCloudsCollected++;
+                break;
+            default:
+                cloudService.addWater(world.getCloud(), waterForType(drop.getType()));
+                break;
+        }
+    }
+
+    private Drop spawnDrop(Biome biome) {
         float roll = random.nextFloat();
         Drop.DropType type;
-        if (roll < GameConstants.Drop.CLOUD_CHANCE) {
+
+        float acidChance = (biome != null) ? biome.getAcidDropChance() : 0f;
+        if (roll < acidChance) {
+            type = Drop.DropType.ACID;
+        } else if (roll < acidChance + GameConstants.Drop.CLOUD_CHANCE) {
             type = Drop.DropType.MINI_CLOUD;
-        } else if (roll < GameConstants.Drop.CLOUD_CHANCE + GameConstants.Drop.SPECIAL_CHANCE) {
+        } else if (roll < acidChance + GameConstants.Drop.CLOUD_CHANCE + GameConstants.Drop.SPECIAL_CHANCE) {
             type = Drop.DropType.SPECIAL;
         } else {
             type = Drop.DropType.NORMAL;
         }
+
         float y = MathUtils.random(200f, 480f);
         return new Drop(820f, y, type);
     }
+
     private float waterForType(Drop.DropType type) {
         switch (type) {
             case SPECIAL:    return GameConstants.Drop.WATER_SPECIAL;
